@@ -8,9 +8,62 @@ import Container from 'muicss/lib/react/container';
 
 
 export default class UploadProfilePicScreen extends Component {
-
+  state = {
+        
+    path: '',
+    preview: null,
+    data: null
+}
+changePath = (e) => {
+  const file = e.target.files[0];
+  if (!file) {
+      console.log('未選擇圖片');
+      return;
   // Properties used by this component:
   // appActions, deviceInfo
+  }
+  let src,preview,type=file.type;
+  if (/^image\/\S+$/.test(type)) {
+    src = URL.createObjectURL(file)
+    preview = <img src={src} style={{width:'275px',height:'168px'}} alt='' />
+
+}
+else if (/^text\/\S+$/.test(type)) {
+  const self = this;
+  const reader = new FileReader();
+  reader.readAsText(file);
+  reader.onload = function (e) {
+      preview = <textarea value={this.result} readOnly></textarea>
+      self.setState({ data: file, preview: preview })
+  }
+  return;
+} 
+
+this.setState({ data: file, preview: preview })
+}
+upload = () => {
+        
+  const data = this.state.data;
+  if (!data) {
+      console.log('未選擇文件');
+      return;
+  }
+
+ 
+  const url = 'http://localhost:3000/api/upload';
+  const form = new FormData();
+
+  
+  form.append('file', data);
+
+  fetch(url, {
+      method: 'POST',
+      body: form
+  }).then(res => {
+      console.log(res)
+  })
+}
+
 
   onClick_elConfirm = (ev) => {
     // Go to screen 'profile1'
@@ -20,6 +73,7 @@ export default class UploadProfilePicScreen extends Component {
   
   
   render() {
+    const { preview } = this.state;
     // eslint-disable-next-line no-unused-vars
     let baseStyle = {};
     // eslint-disable-next-line no-unused-vars
@@ -126,11 +180,9 @@ export default class UploadProfilePicScreen extends Component {
     const style_confirm_outer = {
         cursor: 'pointer',
      };
-    const style_card = {
-        borderRadius: '12.0%',
-     };
+    
     const style_card_outer = {
-        boxShadow: '0.0px 5.3px 37px rgba(0, 0, 0, 0.4500)',
+        boxShadow: '2.0px 5.3px 37px rgba(0, 0, 0, 0.4500)',
         pointerEvents: 'none',
      };
     
@@ -196,17 +248,30 @@ export default class UploadProfilePicScreen extends Component {
           
           </div>
           
+          
           <div className="flowRow flowRow_UploadProfilePicScreen_elConfirm_188754">
+          
           <div className='actionFont elConfirm' style={style_confirm_outer}>
             <button style={style_confirm}  onClick={this.onClick_elConfirm} >
               {this.props.locStrings.upprofilepic_button_188754}
             </button>
-          
+            <div className='row'>
+                    
+                    <div className='row-input'>
+                       
+                    <input type='file' accept='image/*' onChange={this.changePath} />
+                    </div>
+                </div>
           </div>
           
           </div>
+          
           <div className='elCard' style={style_card_outer}>
-            <div style={style_card} />
+      
+          <div className='media' >
+                   {preview}
+                </div>
+            
           
           </div>
           

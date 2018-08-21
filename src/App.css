@@ -1699,13 +1699,13 @@
 
   .UploadProfilePicScreen > .layoutFlow > .elCard {
     position: relative;
-    margin-top: -623px;
+    margin-top: -623.56px;
     width: 275px;
     margin-left: 618px;
   }
   .UploadProfilePicScreen > .layoutFlow > .elCard > * { 
   width: 275px;
-  height: 172px;
+  height: 171px;
   }
   
 
